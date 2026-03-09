@@ -248,7 +248,7 @@
           1. Diese HTML-Datei und die JSON-Datei zusammen in einen Ordner legen.<br>
           2. Die HTML-Datei im Browser öffnen.<br>
           3. Zum Teilen kannst du den Ordner später auf Netlify, Vercel oder GitHub Pages hochladen.<br><br>
-          Der Fortschritt wird lokal auf jedem Gerät gespeichert. Für gemeinsame Accounts und Synchronisation wäre später Firebase oder Supabase der nächste Schritt.
+          Wenn die App online liegt und die JSON-Datei im selben Ordner ist, werden die Fragen automatisch geladen. Der Fortschritt wird lokal auf jedem Gerät gespeichert. Für gemeinsame Accounts und Synchronisation wäre später Firebase oder Supabase der nächste Schritt.
         </div>
       </div>
     </section>
@@ -606,11 +606,54 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
   reader.readAsText(file, 'utf-8');
 });
 
+
+async function autoLoadQuestions() {
+  const hasRealLocalQuestions =
+    Array.isArray(questions) &&
+    questions.length > 0 &&
+    !(questions.length === 2 && questions[0]?.question?.startsWith('Beispiel'));
+
+  if (hasRealLocalQuestions) {
+    renderCategories();
+    renderStats();
+    refreshHeader();
+    clearSession();
+    return;
+  }
+
+  try {
+    const response = await fetch('./islamic_exam_questions_all.json', {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      throw new Error('JSON-Datei nicht gefunden');
+    }
+
+    const parsed = await response.json();
+    const normalized = normalizeImportedQuestions(parsed);
+
+    if (normalized.length) {
+      questions = normalized;
+      save(STORAGE_KEYS.questions, questions);
+      renderCategories();
+      renderStats();
+      refreshHeader();
+      clearSession();
+      return;
+    }
+  } catch (error) {
+    console.log('Automatisches Laden nicht möglich:', error);
+  }
+
+  renderCategories();
+  renderStats();
+  refreshHeader();
+  renderQuestion();
+}
+
 setupTabs();
-renderCategories();
-renderStats();
-refreshHeader();
-renderQuestion();
+autoLoadQuestions();
 </script>
 </body>
 </html>
