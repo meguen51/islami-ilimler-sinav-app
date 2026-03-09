@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Islami Ilimler - Sinava Hazirlik Uygulamasi</title>
+  <meta name="theme-color" content="#111827">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111827'/%3E%3Ctext x='32' y='41' font-size='30' text-anchor='middle' fill='white' font-family='Arial, sans-serif'%3EII%3C/text%3E%3C/svg%3E">
+  <style>
+    :root{
+      --bg:#f3f4f8; --bg2:#e9ecf5; --card:#ffffff; --text:#0f172a; --muted:#64748b;
+      --border:#e2e8f0; --accent:#0f172a; --accent-2:#1e293b; --accent-soft:#eef2ff;
+      --button:#ffffff; --button-text:#0f172a;
+      --good:#ecfdf5; --goodb:#10b981; --bad:#fef2f2; --badb:#ef4444;
+      --shadow:0 10px 30px rgba(15,23,42,.08);
+      --shadow-soft:0 4px 18px rgba(15,23,42,.05);
+      --ring:0 0 0 3px rgba(99,102,241,.18);
+    }
+    body.dark{
+      --bg:#0b1020; --bg2:#11182d; --card:#121a2b; --text:#e5eefc; --muted:#94a3b8;
+      --border:#24314a; --accent:#dbe5f5; --accent-2:#f8fafc; --accent-soft:#18233a;
+      --button:#162033; --button-text:#e5eefc;
+      --good:#052e24; --goodb:#34d399; --bad:#3a1014; --badb:#f87171;
+      --shadow:0 16px 34px rgba(0,0,0,.32);
+      --shadow-soft:0 8px 20px rgba(0,0,0,.20);
+      --ring:0 0 0 3px rgba(148,163,184,.20);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, var(--bg2), transparent 28%),
+        linear-gradient(180deg, var(--bg), var(--bg));
+      color:var(--text);
+      transition:background .25s ease,color .25s ease;
+    }
+    .wrap{max-width:1120px;margin:0 auto;padding:18px}
+    .grid{display:grid;gap:16px}
+    .top{grid-template-columns:2fr 1fr}
+    .card{
+      background:color-mix(in srgb, var(--card) 92%, transparent);
+      border:1px solid var(--border);
+      border-radius:28px;
+      padding:22px;
+      box-shadow:var(--shadow-soft);
+      backdrop-filter:blur(10px);
+      transition:background .25s ease,border-color .25s ease,box-shadow .25s ease,transform .2s ease;
+    }
+    .card:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+    .title{font-size:30px;font-weight:800;letter-spacing:-.03em;margin:0}
+    .subtitle{font-size:14px;color:var(--muted);margin-top:6px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .between{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--accent-soft);
+      color:var(--button-text);
+      padding:7px 11px;border-radius:999px;font-size:12px;
+      border:1px solid var(--border)
+    }
+    .tabs{display:flex;gap:10px;flex-wrap:wrap}
+    .tab{
+      padding:11px 16px;border-radius:16px;border:1px solid var(--border);
+      background:var(--button);color:var(--button-text);cursor:pointer;
+      transition:all .2s ease;box-shadow:var(--shadow-soft)
+    }
+    .tab:hover{transform:translateY(-1px)}
+    .tab.active{background:var(--accent);color:var(--bg);border-color:transparent}
+    body.dark .tab.active{color:#0b1020}
+    .section{display:none}
+    .section.active{display:block}
+    .controls{display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:12px}
+    select,input[type=file],textarea{
+      width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:18px;
+      background:var(--button);color:var(--button-text);font:inherit;outline:none;
+      transition:border-color .2s ease, box-shadow .2s ease, background .25s ease, color .25s ease;
+    }
+    select:focus,input[type=file]:focus,textarea:focus{box-shadow:var(--ring);border-color:transparent}
+    textarea{min-height:180px;resize:vertical}
+    button{
+      padding:12px 16px;border-radius:18px;border:1px solid var(--border);
+      background:var(--button);color:var(--button-text);cursor:pointer;font:inherit;
+      transition:all .18s ease;box-shadow:var(--shadow-soft)
+    }
+    button:hover{transform:translateY(-1px)}
+    button:focus-visible{outline:none;box-shadow:var(--ring)}
+    button.primary{background:linear-gradient(135deg, #111827, #334155);color:#fff;border-color:transparent}
+    button.secondary{background:var(--accent-soft)}
+    button.danger{background:linear-gradient(135deg,#991b1b,#b91c1c);color:#fff;border-color:transparent}
+    body.dark button.primary{background:linear-gradient(135deg,#e2e8f0,#94a3b8);color:#0f172a}
+    button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .cols{display:grid;grid-template-columns:330px 1fr;gap:16px}
+    .option{
+      display:block;width:100%;text-align:left;padding:16px;border:1px solid var(--border);
+      border-radius:20px;background:var(--button);color:var(--button-text);margin:12px 0;
+      box-shadow:var(--shadow-soft)
+    }
+    .option:hover{border-color:#94a3b8}
+    .option.selected{border-color:#6366f1;background:var(--accent-soft)}
+    .option.correct{border-color:var(--goodb);background:var(--good)}
+    .option.wrong{border-color:var(--badb);background:var(--bad)}
+    .progress{height:11px;background:color-mix(in srgb, var(--accent-soft) 70%, transparent);border-radius:999px;overflow:hidden;border:1px solid var(--border)}
+    .bar{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);width:0%}
+    body.dark .bar{background:linear-gradient(90deg,#93c5fd,#c4b5fd)}
+    .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    .small{font-size:14px}
+    .list{display:grid;gap:12px}
+    .catrow{border:1px solid var(--border);border-radius:20px;padding:15px;background:var(--button)}
+    .hidden{display:none}
+    a.file{color:inherit}
+    .hero-title{display:flex;align-items:center;gap:14px}
+    .hero-icon{
+      width:54px;height:54px;border-radius:18px;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#111827,#334155);color:#fff;font-weight:800;box-shadow:var(--shadow)
+    }
+    body.dark .hero-icon{background:linear-gradient(135deg,#e2e8f0,#94a3b8);color:#0f172a}
+    .metric{padding:10px 0;border-bottom:1px dashed var(--border)}
+    .metric:last-child{border-bottom:none;padding-bottom:0}
+    .metric:first-child{padding-top:0}
+    @media (max-width:900px){
+      .top,.cols,.controls,.stats{grid-template-columns:1fr}
+      .wrap{padding:12px}
+      .title{font-size:25px}
+      .card{padding:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid top">
+      <div class="card">
+        <div class="between"><div><div class="hero-title"><div class="hero-icon">II</div><div class="title">Islami Ilimler - Sinava Hazirlik Uygulamasi</div></div><div class="subtitle">Mobilfreundlich, teilbar und für längere Lernphasen optimiert.</div></div><button id="themeToggle">🌙 Dark Mode</button></div>
+      </div>
+      <div class="card">
+        <div class="metric between small"><span class="muted">Gesamtfragen</span><span class="badge" id="totalQuestions">0</span></div>
+        <div class="metric between small"><span class="muted">Genauigkeit</span><span class="badge" id="accuracyBadge">0%</span></div>
+        <div class="metric between small"><span class="muted">Falsche Fragen</span><span class="badge" id="wrongBadge">0</span></div>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="learn">Lernen</button>
+      <button class="tab" data-tab="stats">Statistik</button>
+      <button class="tab" data-tab="import">Import / Export</button>
+      <button class="tab" data-tab="share">Teilen</button>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <section class="section active" id="learn">
+      <div class="card">
+        <div class="controls">
+          <select id="categorySelect"></select>
+          <select id="bundleSize">
+            <option value="10">10 Fragen</option>
+            <option value="20">20 Fragen</option>
+            <option value="30">30 Fragen</option>
+            <option value="50">50 Fragen</option>
+          </select>
+          <button class="primary" id="startLearn">Lernmodus</button>
+          <button class="secondary" id="startExam">100er Prüfung</button>
+          <button id="startWrong">Falsche Fragen</button>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+
+      <div class="cols">
+        <div class="card">
+          <div class="between"><strong>Status</strong><span class="badge" id="sessionMode">Kein Lauf</span></div>
+          <div style="height:12px"></div>
+          <div class="small muted">Fortschritt</div>
+          <div class="progress"><div class="bar" id="sessionBar"></div></div>
+          <div style="height:8px"></div>
+          <div class="small" id="sessionCount">0 / 0</div>
+          <div style="height:18px"></div>
+          <div class="small muted">Hinweis</div>
+          <div class="small">Im Lernmodus werden falsche, selten geübte und unsichere Fragen bevorzugt. Im Prüfungsmodus gibt es Feedback erst am Ende.</div>
+        </div>
+
+        <div class="card" id="questionCard">
+          <div class="muted">Starte einen Modus, um zu beginnen.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="stats">
+      <div class="stats">
+        <div class="card"><div class="muted small">Genauigkeit</div><div class="title" style="font-size:34px" id="sAccuracy">0%</div><div class="small muted" id="sCounts">0 richtig · 0 falsch</div></div>
+        <div class="card"><div class="muted small">Gesehene Fragen</div><div class="title" style="font-size:34px" id="sSeen">0</div><div class="small muted">inklusive Wiederholungen</div></div>
+        <div class="card"><div class="muted small">Falsche Fragen</div><div class="title" style="font-size:34px" id="sWrongUnique">0</div><div class="small muted">einzigartige Fragen</div></div>
+      </div>
+      <div style="height:16px"></div>
+      <div class="card">
+        <strong>Kategorie-Performance</strong>
+        <div style="height:12px"></div>
+        <div class="list" id="categoryStats"></div>
+      </div>
+      <div style="height:16px"></div>
+      <div class="card">
+        <strong>Letzte Sitzungen</strong>
+        <div style="height:12px"></div>
+        <div class="list" id="sessionsList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="import">
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div class="card">
+          <strong>Fragen importieren</strong>
+          <div style="height:10px"></div>
+          <div class="small muted">JSON-Datei hochladen oder JSON einfügen.</div>
+          <div style="height:12px"></div>
+          <input type="file" id="fileInput" accept="application/json">
+          <div style="height:12px"></div>
+          <textarea id="jsonInput" placeholder='[{"id":1,"category":"Akaid","question":"...","options":["A","B","C","D"],"correct":2}]'></textarea>
+          <div style="height:12px"></div>
+          <button class="primary" id="importTextBtn">JSON importieren</button>
+        </div>
+        <div class="card">
+          <strong>Export und Reset</strong>
+          <div style="height:12px"></div>
+          <button id="downloadQuestions">Fragen exportieren</button>
+          <div style="height:10px"></div>
+          <button id="downloadProgress">Fortschritt exportieren</button>
+          <div style="height:10px"></div>
+          <button class="danger" id="resetProgress">Fortschritt löschen</button>
+          <div style="height:20px"></div>
+          <strong>Direkte Datei</strong>
+          <div style="height:10px"></div>
+          <div class="small">Deine extrahierte Fragen-Datei:</div>
+          <div style="height:8px"></div>
+          <a class="file" href="islamic_exam_questions_all.json" download>islamic_exam_questions_all.json herunterladen</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="share">
+      <div class="card">
+        <strong>So teilst du die App</strong>
+        <div style="height:12px"></div>
+        <div class="small">
+          1. Diese HTML-Datei und die JSON-Datei zusammen in einen Ordner legen.<br>
+          2. Die HTML-Datei im Browser öffnen.<br>
+          3. Zum Teilen kannst du den Ordner später auf Netlify, Vercel oder GitHub Pages hochladen.<br><br>
+          Der Fortschritt wird lokal auf jedem Gerät gespeichert. Für gemeinsame Accounts und Synchronisation wäre später Firebase oder Supabase der nächste Schritt.
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+const STORAGE_KEYS = {
+  questions: 'exam-app-questions-v2',
+  progress: 'exam-app-progress-v2',
+  sessions: 'exam-app-sessions-v2',
+  theme: 'exam-app-theme-v1'
+};
+
+const DEMO_QUESTIONS = [
+  {id:1,category:'Akaid',question:'Beispiel: Welche Antwort ist richtig?',options:['A','B','C','D'],correct:2,explanation:'Richtige Antwort: C'},
+  {id:2,category:'Kelam',question:'Beispiel: Was ist das Ziel des Kelam?',options:['A','B','C','D'],correct:0,explanation:'Richtige Antwort: A'}
+];
+
+let questions = load(STORAGE_KEYS.questions, null) || DEMO_QUESTIONS;
+let progressMap = load(STORAGE_KEYS.progress, {});
+let sessions = load(STORAGE_KEYS.sessions, []);
+let session = { mode:null, questions:[], index:0, answers:{}, finished:false, selected:null, feedback:false };
+
+function load(key, fallback){
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e){ return fallback; }
+}
+function save(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function pct(a,b){ return b ? Math.round((a/b)*100) : 0; }
+function download(filename, content, type='application/json'){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function normalizeImportedQuestions(raw){
+  return raw.map((item, idx) => ({
+    id: item.id ?? idx + 1,
+    category: item.category ?? item.kategorie ?? 'Genel',
+    question: item.question ?? item.frage ?? '',
+    options: item.options ?? item.optionen ?? [],
+    correct: typeof item.correct === 'number'
+      ? item.correct
+      : typeof item.richtig === 'number'
+      ? item.richtig
+      : typeof item.correctLetter === 'string'
+      ? 'ABCD'.indexOf(item.correctLetter.toUpperCase())
+      : 0,
+    explanation: item.explanation ?? item.erklaerung ?? ''
+  })).filter(q => q.question && Array.isArray(q.options) && q.options.length >= 2);
+}
+function smartSort(items){
+  return items.slice().sort((a,b)=>{
+    const pa = progressMap[a.id] || {seen:0,correct:0,wrong:0};
+    const pb = progressMap[b.id] || {seen:0,correct:0,wrong:0};
+    const sa = pa.wrong * 6 + Math.max(0, 4 - pa.seen) * 2 + ((pa.seen > 0 && pa.correct / pa.seen < 0.6) ? 3 : 0) - pa.correct;
+    const sb = pb.wrong * 6 + Math.max(0, 4 - pb.seen) * 2 + ((pb.seen > 0 && pb.correct / pb.seen < 0.6) ? 3 : 0) - pb.correct;
+    return sb - sa;
+  });
+}
+function getCategories(){
+  return ['all', ...new Set(questions.map(q => q.category))];
+}
+function renderCategories(){
+  const sel = document.getElementById('categorySelect');
+  const current = sel.value || 'all';
+  sel.innerHTML = getCategories().map(c => `<option value="${escapeHtml(c)}">${c === 'all' ? 'Alle Kategorien' : escapeHtml(c)}</option>`).join('');
+  sel.value = getCategories().includes(current) ? current : 'all';
+}
+function filteredQuestions(){
+  const category = document.getElementById('categorySelect').value || 'all';
+  return category === 'all' ? questions : questions.filter(q => q.category === category);
+}
+function buildSession(mode){
+  const base = mode === 'wrong'
+    ? filteredQuestions().filter(q => (progressMap[q.id]?.wrong || 0) > 0)
+    : filteredQuestions();
+  const size = mode === 'exam' ? 100 : Number(document.getElementById('bundleSize').value);
+  const prepared = mode === 'learn' ? smartSort(base) : shuffle(base);
+  session = { mode, questions: prepared.slice(0, Math.min(size, prepared.length)), index: 0, answers: {}, finished:false, selected:null, feedback:false };
+  renderQuestion();
+}
+function answerQuestion(choice){
+  const q = session.questions[session.index];
+  if(!q || session.finished) return;
+  session.answers[q.id] = choice;
+  session.selected = choice;
+
+  const ok = choice === q.correct;
+  const p = progressMap[q.id] || {seen:0,correct:0,wrong:0,lastSeen:null};
+  progressMap[q.id] = {
+    seen: p.seen + 1,
+    correct: p.correct + (ok ? 1 : 0),
+    wrong: p.wrong + (ok ? 0 : 1),
+    lastSeen: new Date().toISOString()
+  };
+  save(STORAGE_KEYS.progress, progressMap);
+
+  if(session.mode === 'exam'){
+    nextQuestion();
+  } else {
+    session.feedback = true;
+    renderQuestion();
+  }
+}
+function nextQuestion(){
+  if(session.index >= session.questions.length - 1){
+    session.finished = true;
+    const correctCount = session.questions.filter(q => session.answers[q.id] === q.correct).length;
+    sessions.unshift({
+      id: Date.now(),
+      mode: session.mode,
+      date: new Date().toISOString(),
+      total: session.questions.length,
+      correct: correctCount
+    });
+    sessions = sessions.slice(0, 30);
+    save(STORAGE_KEYS.sessions, sessions);
+    renderStats();
+    renderSummary();
+    refreshHeader();
+    return;
+  }
+  session.index += 1;
+  session.selected = null;
+  session.feedback = false;
+  renderQuestion();
+}
+function renderSummary(){
+  const card = document.getElementById('questionCard');
+  const total = session.questions.length;
+  const correctCount = session.questions.filter(q => session.answers[q.id] === q.correct).length;
+  const percent = pct(correctCount, total);
+  card.innerHTML = `
+    <div style="text-align:center">
+      <div class="title" style="font-size:26px">${correctCount} / ${total}</div>
+      <div class="muted">Ergebnis · ${percent}%</div>
+      <div style="height:18px"></div>
+      <div class="row" style="justify-content:center">
+        <button class="primary" onclick="buildSession('${session.mode === 'exam' ? 'exam' : 'learn'}')">Neu starten</button>
+        <button onclick="clearSession()">Zurück</button>
+      </div>
+    </div>`;
+  updateSessionBox();
+}
+function clearSession(){
+  session = { mode:null, questions:[], index:0, answers:{}, finished:false, selected:null, feedback:false };
+  renderQuestion();
+}
+function renderQuestion(){
+  const card = document.getElementById('questionCard');
+  if(!session.questions.length){
+    card.innerHTML = `<div class="muted">Starte einen Modus, um zu beginnen.</div>`;
+    updateSessionBox();
+    refreshHeader();
+    return;
+  }
+  if(session.finished){ renderSummary(); return; }
+  const q = session.questions[session.index];
+  card.innerHTML = `
+    <div class="between">
+      <div>
+        <span class="badge">${escapeHtml(q.category)}</span>
+        <div style="height:8px"></div>
+        <div class="small muted">Frage ${session.index + 1} / ${session.questions.length}</div>
+      </div>
+      <div style="min-width:180px" class="progress"><div class="bar" style="width:${((session.index + 1)/session.questions.length)*100}%"></div></div>
+    </div>
+    <div style="height:14px"></div>
+    <div style="font-size:20px;font-weight:700;line-height:1.45">${escapeHtml(q.question)}</div>
+    <div style="height:10px"></div>
+    <div id="optionsBox"></div>
+    <div id="feedbackBox"></div>
+    <div class="between" style="margin-top:14px">
+      <div></div>
+      <button id="nextBtn" class="primary ${session.feedback || session.mode==='exam' ? '' : 'hidden'}">${session.index === session.questions.length - 1 ? 'Ergebnis' : 'Nächste Frage'}</button>
+    </div>
+  `;
+  const optionsBox = document.getElementById('optionsBox');
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    if(session.selected === idx && !session.feedback) btn.classList.add('selected');
+    if(session.feedback && idx === q.correct) btn.classList.add('correct');
+    if(session.feedback && session.selected === idx && idx !== q.correct) btn.classList.add('wrong');
+    btn.innerHTML = `<strong>${String.fromCharCode(65+idx)})</strong> ${escapeHtml(opt)}`;
+    btn.onclick = () => {
+      if(session.selected !== null && !session.feedback) return;
+      if(session.feedback) return;
+      answerQuestion(idx);
+    };
+    optionsBox.appendChild(btn);
+  });
+
+  if(session.feedback){
+    const ok = session.selected === q.correct;
+    document.getElementById('feedbackBox').innerHTML = `
+      <div class="card" style="padding:14px;background:${ok ? '#ecfdf5' : '#fef2f2'};border-color:${ok ? '#10b981' : '#ef4444'}">
+        <strong>${ok ? 'Richtig' : 'Falsch'}</strong>
+        <div class="small" style="margin-top:6px">${escapeHtml(q.explanation || ('Richtige Antwort: ' + String.fromCharCode(65 + q.correct)))}</div>
+      </div>`;
+  }
+  document.getElementById('nextBtn').onclick = nextQuestion;
+  updateSessionBox();
+  refreshHeader();
+}
+function updateSessionBox(){
+  const total = session.questions.length;
+  const current = total ? Math.min(session.index + (session.finished ? total - session.index : 1), total) : 0;
+  document.getElementById('sessionMode').textContent =
+    !session.mode ? 'Kein Lauf' :
+    session.mode === 'learn' ? 'Lernmodus' :
+    session.mode === 'exam' ? 'Prüfung' : 'Falsche Fragen';
+  document.getElementById('sessionCount').textContent = `${total ? (session.finished ? total : session.index + 1) : 0} / ${total}`;
+  document.getElementById('sessionBar').style.width = total ? (((session.finished ? total : session.index + 1) / total) * 100) + '%' : '0%';
+}
+function renderStats(){
+  const values = Object.values(progressMap);
+  const totalSeen = values.reduce((s,p)=>s+(p.seen||0),0);
+  const totalCorrect = values.reduce((s,p)=>s+(p.correct||0),0);
+  const totalWrong = values.reduce((s,p)=>s+(p.wrong||0),0);
+  const wrongUnique = questions.filter(q => (progressMap[q.id]?.wrong || 0) > 0).length;
+
+  document.getElementById('sAccuracy').textContent = pct(totalCorrect, totalCorrect + totalWrong) + '%';
+  document.getElementById('sCounts').textContent = `${totalCorrect} richtig · ${totalWrong} falsch`;
+  document.getElementById('sSeen').textContent = totalSeen;
+  document.getElementById('sWrongUnique').textContent = wrongUnique;
+
+  const box = document.getElementById('categoryStats');
+  box.innerHTML = '';
+  getCategories().filter(c => c !== 'all').forEach(cat => {
+    const qs = questions.filter(q => q.category === cat);
+    const vals = qs.map(q => progressMap[q.id] || {seen:0,correct:0,wrong:0});
+    const correct = vals.reduce((s,p)=>s+p.correct,0);
+    const wrong = vals.reduce((s,p)=>s+p.wrong,0);
+    const acc = pct(correct, correct + wrong);
+    const mastered = qs.filter(q => (progressMap[q.id]?.correct || 0) >= 2 && (progressMap[q.id]?.wrong || 0) === 0).length;
+    const div = document.createElement('div');
+    div.className = 'catrow';
+    div.innerHTML = `
+      <div class="between"><strong>${escapeHtml(cat)}</strong><span class="badge">${qs.length} Fragen</span></div>
+      <div style="height:10px"></div>
+      <div class="progress"><div class="bar" style="width:${acc}%"></div></div>
+      <div style="height:8px"></div>
+      <div class="small muted">Genauigkeit: ${acc}% · Richtig: ${correct} · Falsch: ${wrong} · Sicher: ${mastered}</div>`;
+    box.appendChild(div);
+  });
+
+  const sess = document.getElementById('sessionsList');
+  sess.innerHTML = '';
+  if(!sessions.length){
+    sess.innerHTML = `<div class="muted small">Noch keine Sitzungen gespeichert.</div>`;
+  } else {
+    sessions.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'catrow';
+      const label = s.mode === 'exam' ? 'Prüfungsmodus' : s.mode === 'wrong' ? 'Falsche Fragen' : 'Lernmodus';
+      div.innerHTML = `<div class="between"><div><strong>${label}</strong><div class="small muted">${new Date(s.date).toLocaleString()}</div></div><span class="badge">${s.correct}/${s.total}</span></div>`;
+      sess.appendChild(div);
+    });
+  }
+}
+function refreshHeader(){
+  const values = Object.values(progressMap);
+  const totalCorrect = values.reduce((s,p)=>s+(p.correct||0),0);
+  const totalWrong = values.reduce((s,p)=>s+(p.wrong||0),0);
+  document.getElementById('totalQuestions').textContent = questions.length;
+  document.getElementById('accuracyBadge').textContent = pct(totalCorrect, totalCorrect + totalWrong) + '%';
+  document.getElementById('wrongBadge').textContent = questions.filter(q => (progressMap[q.id]?.wrong || 0) > 0).length;
+}
+function importQuestionsFromText(){
+  try{
+    const parsed = JSON.parse(document.getElementById('jsonInput').value);
+    const normalized = normalizeImportedQuestions(parsed);
+    if(!normalized.length){ alert('Keine gültigen Fragen gefunden.'); return; }
+    questions = normalized;
+    save(STORAGE_KEYS.questions, questions);
+    renderCategories(); renderStats(); refreshHeader(); clearSession();
+    alert(normalized.length + ' Fragen importiert.');
+  }catch(e){
+    alert('Ungültiges JSON.');
+  }
+}
+function escapeHtml(s){
+  return String(s)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#39;");
+}
+
+function applyTheme(theme){
+  const mode = theme === 'dark' ? 'dark' : 'light';
+  document.body.classList.toggle('dark', mode === 'dark');
+  const btn = document.getElementById('themeToggle');
+  if(btn){
+    btn.textContent = mode === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+    btn.setAttribute('aria-label', mode === 'dark' ? 'Zum hellen Modus wechseln' : 'Zum dunklen Modus wechseln');
+  }
+}
+
+function setupTabs(){
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    };
+  });
+}
+const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const savedTheme = localStorage.getItem(STORAGE_KEYS.theme) || (systemPrefersDark ? 'dark' : 'light');
+applyTheme(savedTheme);
+document.getElementById('themeToggle').onclick = () => {
+  const nextTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+  localStorage.setItem(STORAGE_KEYS.theme, nextTheme);
+  applyTheme(nextTheme);
+};
+document.getElementById('startLearn').onclick = () => buildSession('learn');
+document.getElementById('startExam').onclick = () => buildSession('exam');
+document.getElementById('startWrong').onclick = () => buildSession('wrong');
+document.getElementById('importTextBtn').onclick = importQuestionsFromText;
+document.getElementById('downloadQuestions').onclick = () => download('questions.json', JSON.stringify(questions, null, 2));
+document.getElementById('downloadProgress').onclick = () => download('progress.json', JSON.stringify({progressMap, sessions}, null, 2));
+document.getElementById('resetProgress').onclick = () => {
+  if(confirm('Wirklich den kompletten Fortschritt löschen?')){
+    progressMap = {}; sessions = [];
+    save(STORAGE_KEYS.progress, progressMap);
+    save(STORAGE_KEYS.sessions, sessions);
+    renderStats(); refreshHeader(); clearSession();
+  }
+};
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const parsed = JSON.parse(reader.result);
+      const normalized = normalizeImportedQuestions(parsed);
+      if(!normalized.length){ alert('Keine gültigen Fragen gefunden.'); return; }
+      questions = normalized;
+      save(STORAGE_KEYS.questions, questions);
+      renderCategories(); renderStats(); refreshHeader(); clearSession();
+      alert(normalized.length + ' Fragen importiert.');
+    }catch(err){ alert('Datei ist kein gültiges JSON.'); }
+  };
+  reader.readAsText(file, 'utf-8');
+});
+
+setupTabs();
+renderCategories();
+renderStats();
+refreshHeader();
+renderQuestion();
+</script>
+</body>
+</html>
