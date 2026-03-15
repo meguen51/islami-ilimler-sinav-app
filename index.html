@@ -571,18 +571,40 @@ function buildQHTML(q,idx,total,fn){
   const hasTurkish = /[a-zA-ZçşğüöıÇŞĞÜÖİ]/.test(q.question);
   const isMixed = hasAr && hasTurkish;
   if (isMixed) {
-    // Split: Arabic part (before first Latin char sequence) and Turkish part
-    // Pattern: Arabic sentence followed by Turkish question text
-    const splitMatch = q.question.match(/^([\u0600-\u06FF\s\u064B-\u065F\u0670\u060C\u061B\u061F\u0621-\u063A\u0641-\u064A]+)\s+(.+)$/s);
-    if (splitMatch) {
-      const arPart = splitMatch[1].trim();
-      const trPart = splitMatch[2].trim();
-      h+=`<div class="q-text">
-        <div style="font-family:'Scheherazade New',serif;font-size:22px;line-height:2.2;direction:rtl;text-align:right;">${arPart}</div>
-        <div style="font-size:15px;line-height:1.5;direction:ltr;text-align:left;margin-top:4px;">${trPart}</div>
-      </div>`;
+    // Helper: render arabic + turkish in two clean lines
+    const renderMixed=(ar,tr)=>`<div class="q-text">
+      <div style="font-family:'Scheherazade New',serif;font-size:22px;line-height:2.2;direction:rtl;text-align:right;">${ar}</div>
+      <div style="font-size:15px;line-height:1.5;direction:ltr;text-align:left;margin-top:8px;">${tr}</div>
+    </div>`;
+
+    // Case 1: "arabic. Turkish?" — dot separates
+    const dotIdx = q.question.search(/\.\s*[A-Za-zÇçŞşĞğÜüÖöİı]/);
+    if (dotIdx !== -1) {
+      const arPart = q.question.slice(0, dotIdx).trim();
+      const trPart = q.question.slice(dotIdx + 1).trim();
+      h += renderMixed(arPart, trPart);
+
+    // Case 2: Turkish starts first, then arabic — e.g. "...... الدَّرْسَ Boşluğa..."
+    // OR "إِنَّ kelimesi hangi..." — arabic word mixed inside Turkish
+    // Detect: does the string start with Latin/dots before any Arabic?
+    } else if (/^[^\u0600-\u06FF]*[A-Za-zÇçŞşĞğÜüÖöİı]/.test(q.question) &&
+               /^[^؀-ۿ]/.test(q.question)) {
+      // Turkish leads, find where Turkish ends and Arabic block begins
+      // Split: extract all Arabic runs and all non-Arabic runs
+      const arRun = q.question.match(/[؀-ۿ][؀-ۿ\sً-ٟؐ-ؚ؜-ٰٟۖ-ۜ۟-۪ۤۧۨ-ۭ]*/g)||[];
+      const arPart = arRun.join(' ').trim();
+      // Turkish = everything that is not Arabic chars
+      const trPart = q.question.replace(/[؀-ۿً-ٰٟ]+/g,'').replace(/\s+/g,' ').trim();
+      h += renderMixed(arPart, trPart);
+
+    // Case 3: Arabic leads, then Turkish after space (no dot)
     } else {
-      h+=`<div class="q-text" style="font-family:'Scheherazade New',serif;font-size:22px;line-height:2.2;unicode-bidi:plaintext;">${q.question}</div>`;
+      const splitMatch = q.question.match(/^([؀-ۿ\sً-ٰٟ،؛؟ء-غف-يۖ-ۜ۟-۪ۤۧۨ-ۭ]+?)\s{1,3}([A-Za-zÇçŞşĞğÜüÖöİı].*)$/s);
+      if (splitMatch) {
+        h += renderMixed(splitMatch[1].trim(), splitMatch[2].trim());
+      } else {
+        h+=`<div class="q-text" style="font-family:'Scheherazade New',serif;font-size:22px;line-height:2.2;unicode-bidi:plaintext;">${q.question}</div>`;
+      }
     }
   } else if (hasAr) {
     h+=`<div class="q-text" style="font-family:'Scheherazade New',serif;font-size:22px;line-height:2.2;direction:rtl;text-align:right;">${q.question}</div>`;
