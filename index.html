@@ -320,7 +320,13 @@ button:disabled{opacity:.45;cursor:not-allowed;}
       <div class="card-title" style="margin:0;">📂 Fragen nach Kategorie</div>
     </div>
     <!-- Globale Suche -->
-    <input type="text" id="fqSearch" placeholder="🔍  In allen Fragen suchen…" oninput="akkSearch()"
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+    <button class="akk-filter-btn" data-f="all" onclick="setAkkFilter('all')" style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;border:none;cursor:pointer;background:var(--teal);color:#fff;">Alle</button>
+    <button class="akk-filter-btn" data-f="correct" onclick="setAkkFilter('correct')" style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;border:none;cursor:pointer;background:var(--surface2);color:var(--text);">✅ Richtig</button>
+    <button class="akk-filter-btn" data-f="wrong" onclick="setAkkFilter('wrong')" style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;border:none;cursor:pointer;background:var(--surface2);color:var(--text);">❌ Falsch</button>
+    <button class="akk-filter-btn" data-f="unseen" onclick="setAkkFilter('unseen')" style="font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;border:none;cursor:pointer;background:var(--surface2);color:var(--text);">🆕 Neu</button>
+  </div>
+  <input type="text" id="fqSearch" placeholder="🔍  In allen Fragen suchen…" oninput="akkSearch()"
       style="width:100%;padding:8px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:13px;box-sizing:border-box;outline:none;margin-bottom:12px;">
     <div id="akkordeon"></div>
   </div>
@@ -416,16 +422,33 @@ function updateUnseenInfo(){
   const cat=document.getElementById('categorySelect').value;
   let pool=cat==='Alle Kategorien'?ALL_QUESTIONS:ALL_QUESTIONS.filter(q=>q.category===cat);
   const total=pool.length;
-  const seen=(stats.seenIds||[]).filter(id=>pool.some(q=>q.id===id)).length;
+  const seenSet=new Set(stats.seenIds||[]);
+  const wrongSet=new Set(stats.wrongIds||[]);
+  const seen=pool.filter(q=>seenSet.has(q.id)).length;
+  const wrong=pool.filter(q=>wrongSet.has(q.id)).length;
   const unseen=total-seen;
-  const pct=Math.round(seen/total*100);
-  let msg='';
-  if(unseen===0){
-    msg=`✅ Alle ${total} Fragen gesehen! Nächste Session startet von vorne.`;
+  const correct=seen-wrong;
+  const el=document.getElementById('unseenInfo');
+  if(!el) return;
+
+  const seenPct=total>0?seen/total:0;
+  const repeatUnlocked=seenPct>=0.8;
+  const progressTo80=Math.min(100,Math.round(seenPct/0.8*100));
+
+  if(unseen===0 && wrong===0){
+    el.innerHTML=`✅ Alle ${total} Fragen gesehen & richtig! Wiederholung läuft.`;
+    el.style.borderColor='#22c55e';
   } else {
-    msg=`📋 ${unseen} neue Fragen verbleiben · ${seen}/${total} gesehen (${pct}%)`;
+    const repeatHint=repeatUnlocked
+      ? `<span style="color:#22c55e;font-size:11px;">🔓 Wiederholung freigeschaltet (≥80% gesehen)</span>`
+      : `<span style="color:#94a3b8;font-size:11px;">🔒 Wiederholung ab 80% gesehen (${Math.round(seenPct*100)}% / 80%)</span>`;
+    el.innerHTML=
+      `<span style="color:#f59e0b;font-weight:900;">🆕 ${unseen} neu</span>&nbsp;&nbsp;`+
+      `<span style="color:#ef4444;font-weight:900;">❌ ${wrong} falsch</span>&nbsp;&nbsp;`+
+      `<span style="color:#22c55e;font-weight:900;">✅ ${correct} richtig</span>`+
+      `<br>${repeatHint}`;
+    el.style.borderColor=repeatUnlocked?'#22c55e':'var(--teal)';
   }
-  document.getElementById('unseenInfo').textContent=msg;
 }
 
 function init(){
@@ -453,19 +476,60 @@ function getFiltered(onlyUnseen=true){
   let pool=cat==='Alle Kategorien'?ALL_QUESTIONS:ALL_QUESTIONS.filter(q=>q.category===cat);
   if(onlyUnseen && stats.seenIds && stats.seenIds.length>0){
     const unseen=pool.filter(q=>!stats.seenIds.includes(q.id));
-    // If all seen in this category, return all (reset for this pool)
     return unseen.length>0 ? unseen : pool;
   }
   return pool;
+}
+
+// Smart bundle: Falsch → Neu → Wiederholung (nur wenn 80% gesehen)
+function buildSmartBundle(pool, count){
+  const seenSet=new Set(stats.seenIds||[]);
+  const wrongSet=new Set(stats.wrongIds||[]);
+
+  const wrongQ   = pool.filter(q=>wrongSet.has(q.id));
+  const unseenQ  = pool.filter(q=>!seenSet.has(q.id));
+  const correctQ = pool.filter(q=>seenSet.has(q.id)&&!wrongSet.has(q.id));
+
+  const total=pool.length;
+  const seenPct=total>0?(pool.length-unseenQ.length)/total:0;
+  const repeatUnlocked=seenPct>=0.8; // Wiederholung erst ab 80% gesehen
+
+  // Wenn alles gesehen und nichts falsch → Wiederholung aller
+  if(unseenQ.length===0 && wrongQ.length===0){
+    return shuffle(correctQ).slice(0,count);
+  }
+
+  let bundle=[];
+
+  // Priorität 1: Falsch (max 40%)
+  const wrongSlots=Math.min(wrongQ.length, Math.ceil(count*0.4));
+  bundle=bundle.concat(shuffle(wrongQ).slice(0,wrongSlots));
+
+  // Priorität 2: Neue Fragen
+  const unseenSlots=Math.min(unseenQ.length, count-bundle.length);
+  bundle=bundle.concat(shuffle(unseenQ).slice(0,unseenSlots));
+
+  // Priorität 3: Wiederholung nur wenn 80% gesehen
+  if(bundle.length<count && repeatUnlocked){
+    const repeat=Math.min(correctQ.length, count-bundle.length);
+    bundle=bundle.concat(shuffle(correctQ).slice(0,repeat));
+  }
+
+  return shuffle(bundle).slice(0,count);
 }
 
 function startSession(mode,isWrong){
   wrongMode=isWrong;
   currentMode=mode;
   if(!isWrong){
-    const filtered=getFiltered(mode!=='exam'); // exam uses all questions
+    const cat=document.getElementById('categorySelect').value;
+    let pool=cat==='Alle Kategorien'?ALL_QUESTIONS:ALL_QUESTIONS.filter(q=>q.category===cat);
     const count=mode==='exam'?100:parseInt(document.getElementById('bundleSize').value);
-    currentBundle=shuffle(filtered).slice(0,Math.min(count,filtered.length));
+    if(mode==='exam'){
+      currentBundle=shuffle(pool).slice(0,Math.min(100,pool.length));
+    } else {
+      currentBundle=buildSmartBundle(pool, count);
+    }
   }
   currentIndex=0; sessionCorrect=0;
   stats.sessions++;
@@ -719,9 +783,13 @@ function renderAkkordeon(searchTerm=''){
     const wrongPct=total>0?Math.round((catStats.answered-catStats.correct)/total*100):0;
     const unseen=total-seen;
 
-    // Filter rows if searching
+    // Filter rows based on status filter
     let rows=qs;
-    if(search) rows=qs.filter(q=>
+    if(akkFilter==='correct') rows=qs.filter(q=>seenSet.has(q.id)&&!wrongSet.has(q.id));
+    else if(akkFilter==='wrong') rows=qs.filter(q=>wrongSet.has(q.id));
+    else if(akkFilter==='unseen') rows=qs.filter(q=>!seenSet.has(q.id));
+    // Filter rows if searching
+    if(search) rows=rows.filter(q=>
       q.question.toLowerCase().includes(search)||
       (q.options||[]).some(o=>o.toLowerCase().includes(search))
     );
@@ -734,10 +802,16 @@ function renderAkkordeon(searchTerm=''){
       const isWrong=wrongSet.has(q.id);
       const icon=isWrong?'❌':isSeen?'✅':'·';
       const col=isWrong?'#ef4444':isSeen?'#22c55e':'#cbd5e1';
+      const bgCol=isWrong?'#fff5f5':isSeen&&!isWrong?'#f0fdf4':'';
       const shortQ=q.question.length>65?q.question.slice(0,65)+'…':q.question;
-      return `<div class="akk-row" style="border-left:3px solid ${col}" onclick="openFqModal(${q.id})">
-        <div class="akk-row-num">#${q.source_number||q.id}</div>
-        <div class="akk-row-q">${shortQ}</div>
+      const numStyle=isWrong?'color:#ef4444;font-weight:900;':isSeen?'color:#22c55e;font-weight:900;':'color:#94a3b8;';
+      return `<div class="akk-row" style="border-left:3px solid ${col};${bgCol?'background:'+bgCol+';':''}" onclick="openFqModal(${q.id})">
+        <div class="akk-row-num" style="${numStyle}">#${q.source_number||q.id}</div>
+        <div class="akk-row-q" style="${isSeen&&!isWrong?'color:#166534;font-weight:600;':isWrong?'color:#9f1239;':''}">
+          ${isSeen&&!isWrong?'<span style="font-size:10px;background:#22c55e;color:#fff;border-radius:4px;padding:1px 5px;margin-right:5px;font-weight:800;">✓ Richtig</span>':''}
+          ${isWrong?'<span style="font-size:10px;background:#ef4444;color:#fff;border-radius:4px;padding:1px 5px;margin-right:5px;font-weight:800;">✗ Falsch</span>':''}
+          ${shortQ}
+        </div>
         <div class="akk-row-icon">${icon}</div>
       </div>`;
     }).join('');
@@ -777,6 +851,16 @@ function renderAkkordeon(searchTerm=''){
 }
 
 let akkOpenCats=new Map(); // cat -> numShown
+let akkFilter='all'; // 'all' | 'correct' | 'wrong' | 'unseen'
+
+function setAkkFilter(f){
+  akkFilter=f;
+  document.querySelectorAll('.akk-filter-btn').forEach(b=>{
+    b.style.background=b.dataset.f===f?'var(--teal)':'var(--surface2)';
+    b.style.color=b.dataset.f===f?'#fff':'var(--text)';
+  });
+  renderAkkordeon(document.getElementById('fqSearch')?.value||'');
+}
 
 function toggleAkk(cat){
   if(akkOpenCats.has(cat)){
