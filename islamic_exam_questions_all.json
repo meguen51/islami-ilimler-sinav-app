@@ -5012,16 +5012,16 @@
     "category": "Hadis",
     "source_number": 88,
     "sequence_in_category": 88,
-    "question": "Aşağıdakilerden hangisi râvinin hafıza bozukluğu nedeniyle rivayetinin reddedildiği durumlardan biri değildir?",
+    "question": "Aşağıdakilerden hangisi bir ravinin 'zabt' (ezber/hafıza) kusuru ile ilgili bir durum değildir?",
     "options": [
-      "Râvinin kitaplarının kaybolması",
-      "Râvinin hastalık veya yaşlılık nedeniyle unutkanlık yaşaması",
-      "Râvinin akıl sağlığını yitirmesi",
-      "Râvinin sık sık farklı râvilerden çelişkili hadisler rivayet etmesi"
+      "Ravinin çok yaşlanıp olayları karıştırması",
+      "Ravinin hadisleri yanlış ezberlemesi",
+      "Ravinin yalan söylemeyi adet haline getirmesi",
+      "Ravinin rivayet ederken çok sık hata yapması"
     ],
-    "correct": 0,
-    "correct_letter": "A",
-    "explanation": "Doğru cevap: A"
+    "correct": 2,
+    "correct_letter": "C",
+    "explanation": "Doğru cevap: C"
   },
   {
     "id": 315,
@@ -5348,16 +5348,16 @@
     "category": "Hadis",
     "source_number": 109,
     "sequence_in_category": 109,
-    "question": "Aşağıdaki hadis türlerinden hangisi isnadındaki kopukluk nedeniyle zayıf kabul edilmez?",
+    "question": "Aşağıdaki hadis türlerinden hangisinde zayıflık sebebi isnadındaki bir kopukluk değil, ravinin güvenilirliği/karakteri ile ilgilidir?",
     "options": [
-      "Muallak Hadis",
-      "Müdelles Hadis",
+      "Mürsel Hadis",
+      "Münkatı Hadis",
       "Mevzû Hadis",
-      "Münkatı Hadis"
+      "Muallak Hadis"
     ],
-    "correct": 1,
-    "correct_letter": "B",
-    "explanation": "Doğru cevap: B"
+    "correct": 2,
+    "correct_letter": "C",
+    "explanation": "Doğru cevap: C"
   },
   {
     "id": 336,
@@ -7828,12 +7828,12 @@
     "category": "İslam Tarihi II",
     "source_number": 4,
     "sequence_in_category": 4,
-    "question": "Aşağıdakilerden hangisi İslam tarihini “Hak ile Batıl’ın mücadelesi” olarak yorumlayan görüşün temel zayıflığıdır?",
+    "question": "İslam tarihini sadece “Hak ile Batıl’ın mücadelesi” olarak görmek, tarihi anlamayı neden zorlaştırır?",
     "options": [
-      "Bu görüş, İslam tarihini yalnızca tevhid mücadelesi çerçevesinde ele almaktadır.",
-      "Bu görüş, İslam tarihinin sadece savaşlardan ibaret olduğunu iddia etmektedir.",
-      "Bu görüş, tüm tarihî olayları beşerî faktörlerden bağımsız değerlendirmektedir.",
-      "Bu görüş, tarihte tüm Müslümanların her zaman aynı safta olduğunu kabul etmektedir."
+      "Çünkü bu bakış açısı; kıtlık, ekonomi, siyaset ve insan hataları gibi gerçek sebepleri görmemizi engeller.",
+      "Çünkü bu bakış açısı, Müslümanların her zaman çok güçlü olduğunu savunur.",
+      "Çünkü bu bakış açısı, sadece eski zamanları anlatır, günümüzü anlatmaz.",
+      "Çünkü bu bakış açısı, kitap okumayı zorlaştırır"
     ],
     "correct": 0,
     "correct_letter": "A",
@@ -10084,16 +10084,16 @@
     "category": "Tefsir",
     "source_number": 25,
     "sequence_in_category": 25,
-    "question": "Vahyin süratli olmasının sebebi aşağıdakilerden hangisiyle açıklanabilir?",
+    "question": "Vahyinin parça parça (tederricen) ve zaman içinde peyderpey indirilmesinin temel sebebi aşağıdakilerden hangisidir?",
     "options": [
-      "Peygamberlerin zayıf hafızalarının desteklenmesi",
-      "İnsanların kısa sürede bilgiyi anlamalarının sağlanması",
-      "İlahi bilginin insana doğrudan ve en etkili şekilde aktarılması",
-      "Vahyin hafızada kalıcı olmasının amaçlanması"
+      "Peygamberlerin unutma ihtimaline karşı önlem almak.",
+      "Vahyin kolayca ezberlenmesini, anlaşılmasını ve hayata geçirilmesini sağlamak.",
+      "Gelecek nesillere daha hacimli bir kitap bırakmak.",
+      "Sadece önemli toplumsal olaylara müdahale etmek."
     ],
-    "correct": 2,
-    "correct_letter": "C",
-    "explanation": "Doğru cevap: C"
+    "correct": 1,
+    "correct_letter": "B",
+    "explanation": "Doğru cevap: B"
   },
   {
     "id": 632,
@@ -12054,10 +12054,10 @@
     "sequence_in_category": 43,
     "question": "İslam hukukunda bir kişi zorlama (ikrah) altında bazı işlemleri yapmaya mecbur bırakılırsa bu işlemlerin geçerliliği farklı olabilir. Aşağıdakilerden hangisi tam zorlama (ikrah-ı mülci) durumunda geçerlidir?",
     "options": [
-      "Zorla yapılan nikâh geçersizdir.",
-      "Zorla yapılan alışveriş her durumda geçerlidir.",
-      "Zorla yapılan talak geçersizdir.",
-      "Zorla yaptırılan bir ibadet, kişinin kendi rızasıyla yaptığı gibi makbuldür."
+      "Alışveriş sözleşmesi yapmak",
+      "Kira kontratı imzalamak",
+      "Eşini boşamak (Talak)",
+      "Bir malı başkasına hibe etmek"
     ],
     "correct": 2,
     "correct_letter": "C",
@@ -21316,7 +21316,7 @@
     "category": "Arapça",
     "source_number": 24,
     "sequence_in_category": 24,
-    "question": "نَحْنُ ...... الدَّرْسَ كُلَّ يَوْم . Boşluğa uygun muzâri fiil hangisidir?",
+    "question": "نَحْنُ ...... الدَّرْسَ كُلَّ يَوْمٍ . Boşluğa uygun muzâri fiil hangisidir?",
     "options": [
       "ُ نَقَرَأ",
       "ُ يَقْرَأ",
@@ -22859,9 +22859,9 @@
       "تَجْلِسْنَ",
       "يَجْلِسُ"
     ],
-    "correct": 2,
-    "correct_letter": "C",
-    "explanation": "Doğru cevap: C"
+    "correct": 0,
+    "correct_letter": "A",
+    "explanation": "Doğru cevap: A"
   },
   {
     "id": 1430,
